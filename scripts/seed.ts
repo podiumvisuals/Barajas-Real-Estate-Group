@@ -6,6 +6,7 @@
  *
  * Usage: npm run seed
  */
+import 'dotenv/config'
 import config from '../src/payload.config'
 import { getPayload } from 'payload'
 
