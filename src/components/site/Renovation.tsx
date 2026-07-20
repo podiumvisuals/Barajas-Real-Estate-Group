@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { getPayloadClient } from '@/lib/payload'
 import { mediaAlt, mediaUrl } from '@/lib/media'
+import BeforeAfterSlider from './BeforeAfterSlider'
 import Icon from './Icon'
 
 export default async function Renovation() {
@@ -39,23 +40,12 @@ export default async function Renovation() {
               const afterUrl = mediaUrl(tile.afterImage)
               return (
                 <div className="reno-tile big" key={i}>
-                  <div className="split">
-                    <div
-                      className="half before"
-                      style={beforeUrl ? { backgroundImage: `url(${beforeUrl})` } : undefined}
-                    >
-                      <span>Before</span>
-                    </div>
-                    <div
-                      className="half after"
-                      style={afterUrl ? { backgroundImage: `url(${afterUrl})` } : undefined}
-                    >
-                      <span>After</span>
-                    </div>
-                  </div>
-                  <div className="divider">
-                    <div className="handle">↔</div>
-                  </div>
+                  <BeforeAfterSlider
+                    beforeUrl={beforeUrl}
+                    beforeAlt={mediaAlt(tile.beforeImage, `${tile.title} — before`)}
+                    afterUrl={afterUrl}
+                    afterAlt={mediaAlt(tile.afterImage, `${tile.title} — after`)}
+                  />
                   <div className="lbl">
                     <div className="t">{tile.title}</div>
                     {tile.subtitle && <div className="s">{tile.subtitle}</div>}

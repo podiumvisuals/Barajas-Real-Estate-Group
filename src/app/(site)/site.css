@@ -236,19 +236,27 @@ nav.wrap{ display:flex; align-items:center; justify-content:space-between; heigh
 .reno-tile .lbl{ position:relative; z-index:1; }
 .reno-tile .lbl .t{ font-size:13.5px; font-weight:700; }
 .reno-tile .lbl .s{ font-size:11.5px; color:#c9c4b8; margin-top:2px; }
-.reno-tile .split{ position:absolute; inset:0; display:grid; grid-template-columns:1fr 1fr; }
-.reno-tile .split .half{ position:relative; display:flex; align-items:flex-start; padding:14px; font-size:10.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; background-size:cover; background-position:center; overflow:hidden; }
-.reno-tile .split .half::before{ content:''; position:absolute; inset:0; }
-.reno-tile .split .half.before::before{ background:rgba(255,255,255,0.05); }
-.reno-tile .split .half.before span{ position:relative; color:#d8d3c8; }
-.reno-tile .split .half.after::before{ background:rgba(205,163,106,0.16); }
-.reno-tile .split .half.after span{ position:relative; color:var(--accent-2); }
-.reno-tile .divider{ position:absolute; top:0; bottom:0; left:50%; width:2px; background:rgba(255,255,255,0.35); z-index:1; }
-.reno-tile .divider .handle{
+.reno-tile .baf{ position:absolute; inset:0; cursor:ew-resize; touch-action:pan-y; -webkit-user-select:none; user-select:none; }
+.reno-tile .baf-img{ position:absolute; inset:0; background-size:cover; background-position:center; }
+.reno-tile .baf-img::before{ content:''; position:absolute; inset:0; }
+.reno-tile .baf-after::before{ background:rgba(205,163,106,0.16); }
+.reno-tile .baf-before::before{ background:rgba(255,255,255,0.05); }
+.reno-tile .baf-tag{
+  position:absolute; top:14px; font-size:10.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+}
+.reno-tile .baf-after .baf-tag{ right:14px; color:var(--accent-2); }
+.reno-tile .baf-before .baf-tag{ left:14px; color:#d8d3c8; }
+.reno-tile .baf-divider{
+  position:absolute; top:0; bottom:0; width:2px; background:rgba(255,255,255,0.35); z-index:1;
+  transform:translateX(-1px); cursor:ew-resize;
+}
+.reno-tile .baf-divider .handle{
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
   width:34px; height:34px; border-radius:50%; background:#fff; color:var(--ink);
   display:flex; align-items:center; justify-content:center; font-size:13px; box-shadow:0 6px 16px rgba(0,0,0,.35);
+  pointer-events:none;
 }
+.reno-tile .baf-divider:focus-visible{ outline:2px solid var(--accent-2); outline-offset:2px; }
 .reno-tile .playbtn{
   width:52px; height:52px; border-radius:50%; background:var(--accent-2); color:#1c1204;
   display:flex; align-items:center; justify-content:center; font-size:18px; position:relative; z-index:1;
