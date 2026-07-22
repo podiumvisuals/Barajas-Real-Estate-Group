@@ -35,7 +35,7 @@ Content changes appear on the live site immediately — no deploy needed. Code c
 
 - **Framework**: Next.js 16 (App Router), Payload CMS 3 embedded in the same app (not Payload Cloud — self-hosted, no separate vendor).
 - **Database**: Neon Postgres (`@payloadcms/db-postgres`), connected via Vercel's Neon Marketplace integration.
-- **Media storage**: Vercel Blob (`@payloadcms/storage-vercel-blob`), client-side uploads to bypass Vercel's 4.5MB server upload limit.
+- **Media storage**: S3-compatible object storage (`@payloadcms/storage-s3`), configured for Supabase Storage.
 - **Contact form**: `@payloadcms/plugin-form-builder` — dynamic fields defined in `/admin`, submissions stored in a `form-submissions` collection.
 - **Frontend data fetching**: Server Components call Payload's **Local API** directly (`getPayload({config})` → `payload.find`/`findGlobal`) — no HTTP round-trip, since it talks straight to Postgres from the same server process.
 - **Two route groups**: `app/(payload)` (Payload's own admin panel + REST/GraphQL API, boilerplate copied verbatim from Payload's official template) and `app/(site)` (the actual public site, hand-written).
@@ -56,8 +56,8 @@ npm install
 ```
 
 Copy `.env.example` to `.env` and fill in:
-- `DATABASE_URL` / `DATABASE_URL_UNPOOLED` — from Vercel dashboard → project → Storage → Neon
-- `BLOB_READ_WRITE_TOKEN` — from Vercel dashboard → project → Storage → Blob store
+- `DATABASE_URL` / `DATABASE_URL_UNPOOLED` — Neon Postgres connection strings (from Neon's dashboard directly, or via Vercel dashboard → project → Storage → Neon if still provisioned that way)
+- `S3_BUCKET` / `S3_ENDPOINT` / `S3_REGION` / `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` — from Supabase Dashboard → Storage → S3 Connection (project settings page shows all five values directly)
 - `PAYLOAD_SECRET` — any long random string (`node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`)
 
 ```bash
@@ -95,11 +95,14 @@ This is intentional and currently **enabled** (`vercel project protection baraja
 **4. The 10 seeded listing/agent photos are placeholders sourced from real Zillow listings, not Lily's own.**
 They're structurally correct (right aspect ratios, realistic content) but were only ever meant to prove the design out. Replace them — especially the agent headshot — through `/admin` before treating the site as fully live. `npm run seed` re-fetches them from Zillow's CDN at seed time; they are not committed to this repo.
 
+**5. Don't switch media storage to Hostinger's local filesystem if this app ever moves off Vercel.**
+Hostinger support confirmed that GitHub/ZIP redeploys on their Node.js hosting rebuild/replace the app directory, so runtime-written files (like local uploads) can be silently wiped on the next deploy. This is why media storage uses S3-compatible object storage (`@payloadcms/storage-s3`, configured for Supabase Storage) instead of Payload's local-disk upload option — keep it that way regardless of hosting provider.
+
 ## Third-party services
 
 | Service | Purpose |
 |---|---|
-| Neon (via Vercel Marketplace) | Postgres database |
-| Vercel Blob | Media/image storage |
-| Vercel | Hosting |
+| Neon | Postgres database |
+| Supabase Storage | Media/image storage |
+| Vercel | Hosting (migration to Hostinger in progress) |
 | Resend (not yet configured) | Contact-form email notifications — submissions are saved in `/admin` regardless; email alerts need `RESEND_API_KEY`, `NOTIFY_EMAIL_TO`, `NOTIFY_EMAIL_FROM` set |
